@@ -1,0 +1,16 @@
+# Captures: large binaries, environment-specific imagery
+captures/
+
+# Local scratch
+*.log
+*.tmp
+tmp/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Editors / OS
+.DS_Store
+*.swp
