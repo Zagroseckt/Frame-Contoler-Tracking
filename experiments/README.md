@@ -29,6 +29,8 @@ Template:
 | EXP-003 | Tracking dataset with camera video: where it lands, what's in it | planned |
 | EXP-004 | Frame controller constellation extracted from headset model files | **passed 2026-11-11** |
 | EXP-005 | Bluetooth visibility of Quest 3 controller in pairing mode | planned |
+| EXP-006 | Custom OpenVR diagnostic client `sfct-diag` (read-only pose census) | planned |
+| EXP-007 | XRIPC second-session probe — **gated, needs explicit permission** | planned |
 
 Rules:
 

@@ -1,6 +1,9 @@
 # Captures: large binaries, environment-specific imagery
 captures/
 
+# Local mirror of the headset's filesystem (340 MB of binaries); never committed
+local/
+
 # Local scratch
 *.log
 *.tmp

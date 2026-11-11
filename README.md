@@ -29,8 +29,10 @@ Step 4 is a different animal than step 3 and is parked under "Far goal" in `ROAD
 
 - [x] Work area created, named, initialised as its own Git repo.
 - [x] Initial documentation set written (this file plus `docs/`).
-- [ ] Frame reachable on the network and inspected live.
-- [ ] Controller tracking stack inventoried on-device (binaries, configs, logs, services).
+- [x] Frame reachable on the network and inspected live.
+- [x] Controller tracking stack inventoried on-device (binaries, configs, logs, services) — see `docs/07`.
+- [x] Full tracking-system export pulled for offline examination — `local/frame-export/`, 70 files checksum-verified.
+- [x] Answered: a separate diagnostic interface is possible as a *client*, not as a second tracker — see `docs/08`.
 - [ ] Quest 3 controllers observed at the three layers we can actually observe:
       optical (IR LEDs), radio (2.4 GHz / BLE advertising), input (does anything appear as HID).
 - [ ] First tracking-camera capture attempt (headset view + tracking dataset with camera data).
@@ -47,7 +49,7 @@ three layers has to be bridged first. That evidence is what makes the rest build
 
 | Layer | What the Frame uses | What Quest 3 controllers offer | Bridgeable? |
 |---|---|---|---|
-| Optical | 4 mono fisheye cams + IR illuminators, looking for **18 IR LEDs** per Frame controller | **8 IR LEDs** (7 face + 1 handle), fixed constellation | Needs a custom constellation model. Hard but the most tractable layer. |
+| Optical | 6 outward cams (2 SLAM mono, 2 upper mono, 2 colour passthrough) + IR illuminators, looking for **18 IR LEDs** per Frame controller | **8 IR LEDs** (7 face + 1 handle), fixed constellation | Needs a custom constellation model. Hard but the most tractable layer. |
 | Inertial | IMU in controller, fused with vision | IMU in controller, raw data only over Meta's radio | Blocked by radio layer. |
 | Radio | Proprietary 2.4 GHz link, encrypted, headset-bound | Proprietary 2.4 GHz, encrypted, Meta-headset-bound | Currently no public complete reverse engineering. |
 | Identity | Frame controller pairing flow | Meta pairing flow (phone app, Meta+B / Menu+Y) | Different binding roots. |
@@ -69,6 +71,7 @@ radio later (needs dedicated sniffing hardware). Details in `docs/02` and `docs/
 | `docs/05-diagnostics-playbook.md` | Camera feeds, filters, markers, tracking datasets, log paths |
 | `docs/06-quest3-controllers.md` | Quest 3 deep dive and the concrete attack plan |
 | `docs/07-ondevice-map.md` | **Read this first** — verified map of the headset's tracking stack |
+| `docs/08-diagnostic-interface.md` | Can we build a separate diagnostic interface? Yes as a client, no as a second tracker |
 | `experiments/` | One file per experiment, with pass/fail criteria |
 | `notes/` | Session logs, dated, append-only |
 

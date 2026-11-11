@@ -17,6 +17,10 @@ what will and won't work.
   plan. `[~]` — static evidence collected, no numeric ceiling found; test plan open
 - P0.4 Find out whether any debug view of the tracking cameras with marker overlay exists,
   and whether "filters" can be toggled. `[~]` — "Show Debug Camera Views" toggle found; not yet enabled
+- P0.5 Pull a read-only copy of the whole tracking stack for offline analysis, so originals are
+  never at risk. `[x]` — `local/frame-export/`, 340 MB, 70 files, checksum verified
+- P0.6 Decide whether a standalone diagnostic interface is possible without disturbing normal
+  Steam use. `[x]` — yes as an OpenVR client, no as a second XRIPC instance; see `docs/08`
 
 **Gate:** we can explain, in writing, every stage between "LED blinks" and "pose in OpenXR".
 
@@ -26,6 +30,9 @@ what will and won't work.
 
 **Goal:** reliably capture what the tracking cameras see, with and without processing.
 
+- P1.0 Custom OpenVR diagnostic client (`sfct-diag`): pose census of every tracked device,
+  printed live and logged to CSV. Read-only, no camera access, no restart. `[ ]` — design in
+  `docs/08`, procedure in `experiments/EXP-006`
 - P1.1 Headset view capture over `/dev/video99` at good resolution. `[ ]`
 - P1.2 Tracking dataset recording with camera video enabled (Valve's own dev feature). `[ ]`
 - P1.3 Independent IR observation rig (IR-pass camera / phone camera) for controllers the

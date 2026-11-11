@@ -257,12 +257,42 @@ cd /opt/steamvr/bin/linuxarm64 && LD_LIBRARY_PATH=. ./trackingtest
 `--screenshot`, `--send-vrevent`. `--startcapture/--stopcapture` are **not** the tracking
 dataset recorder (both answered `unknown command`), so that stays a UI operation.
 
-## 11. What is still blocked
+## 11. The offline export (2026-11-11)
+
+The whole tracking stack was copied off the headset so the originals are never touched:
+
+```
+local/frame-export/   ~340 MB, 70 files, MANIFEST.sha256 verified (0 mismatches)
+```
+
+Layout mirrors the device's absolute paths. Included: all of `/opt/steamvr/drivers/cv`
+(binaries, models, shaders, resources), `trackingtest` + `vrcmd` + `libopenvr_api.so`, the full
+`~/.config/openvr/config/` tree (including `roy/` and `xrservice/`), and the day's logs.
+
+Offline findings:
+
+- `libArcturusPerception.so` is **unstripped** — 109,767 defined symbols, 5,790 dynamic. The
+  entire perception-engine API is readable (`PE::XRIPC*`, `PE::PoseSolver`, `PE::PosePredictor`,
+  `ST::InfraredFrame`, `ST::KBSplineIntrinsics`).
+- `driver_cv.so` has 3,422 dynamic symbols; `XRService` is effectively stripped and ships no
+  `.dbg` anywhere on the device.
+- The XRIPC layer is a **single-client** design: twelve fixed shared-memory mailboxes in
+  `/dev/shm` (`XR_ClientRequest_{VeryLow,Low,Mid,High}_Data` plus responses) with no per-client
+  index, one mutex per latency class, and an explicit
+  `isThereASessionRunningInAnotherProcess()` guard.
+
+That last point is the reason a second tracking instance is impossible, and why the diagnostic
+interface has to be a client. Full argument in `docs/08-diagnostic-interface.md`.
+
+## 12. What is still blocked
 
 1. `Show Debug Camera Views` — needs a dashboard click or page injection.
 2. Tracking dataset — UI-only, and we haven't captured one yet.
 3. Any settings experiment — needs an XRService restart, i.e. a SteamVR restart.
 4. Controllers were asleep during this session, so no live controller pose data yet.
+
+A separate diagnostic interface is **not** on this list: it is buildable today as an OpenVR
+client. See `docs/08-diagnostic-interface.md`.
 
 ---
 

@@ -161,6 +161,30 @@ to another headset — the goal is our own hardware.
 
 ---
 
+## 6. The capture route that actually works: an OpenVR client
+
+Everything above is either UI-only or blocked by camera ownership. The reliable route is a small
+client attached to `vrserver` through `libopenvr_api.so` — exactly what `trackingtest` does.
+
+It gives, read-only and with no restart:
+
+- every tracked device index, with `bPoseIsValid`, `bDeviceIsConnected`, and `eTrackingResult`
+- full 3×4 poses, velocities, angular velocities
+- device class, serial, model number, controller role, battery
+- controller button/axis state via `GetControllerStateWithPose`
+
+And it needs nothing more than the toolchain already on the Frame. Design and rationale in
+`docs/08-diagnostic-interface.md`; build procedure in `experiments/EXP-006`.
+
+For pushing *images* into the headset (annotated diagrams, marker mockups, saved frames):
+
+```bash
+/opt/steamvr/tools/imageoverlay/bin/linuxarm64/imageoverlay /path/to/images/
+```
+
+`Usage: imageoverlay <list of image or image directories>`. Click right to advance, left to go
+back, click off the image to exit.
+
 ## 7. Capture hygiene
 
 - All captures go to `captures/` and are **git-ignored** (large binaries, personal environment).
