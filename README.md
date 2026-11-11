@@ -68,6 +68,7 @@ radio later (needs dedicated sniffing hardware). Details in `docs/02` and `docs/
 | `docs/04-tracking-limits.md` | **"How many controllers can it track?"** — the answer, and how to prove it |
 | `docs/05-diagnostics-playbook.md` | Camera feeds, filters, markers, tracking datasets, log paths |
 | `docs/06-quest3-controllers.md` | Quest 3 deep dive and the concrete attack plan |
+| `docs/07-ondevice-map.md` | **Read this first** — verified map of the headset's tracking stack |
 | `experiments/` | One file per experiment, with pass/fail criteria |
 | `notes/` | Session logs, dated, append-only |
 

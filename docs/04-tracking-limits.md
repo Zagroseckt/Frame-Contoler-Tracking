@@ -38,29 +38,42 @@ real constraints are elsewhere:
 So the honest framing is: **64 is the software ceiling; the Frame's vision+radio ceiling is
 somewhere at or below that and we have to measure it.**
 
+## Fresh evidence from the XRService binary `[V] 2026-11-11`
+
+Extracting option names from `/opt/steamvr/drivers/cv/bin/linuxarm64/XRService` turned up the
+following, which change the picture:
+
+| Option name | What it implies |
+|---|---|
+| `filterTrackedLedsForOtherControllers` | the tracker explicitly expects LEDs belonging to *other* controllers in the same frame, and filters them |
+| `alternateNNTrackingBetweenControllers` | NN tracking is scheduled across multiple controllers |
+| `estimateYawFor1LEDControllers` | there is a code path for a single-LED controller |
+| `enableFewLedTrackingMode` | a sparse-constellation mode exists |
+| `fallbackToPoseResidualIfNotAllLedsAreVisbled` | partial visibility is a designed-for case |
+| `controllerTrackingOptions`, `controllerFeatures`, `minControllerSettings` | controller tracking is a configurable subsystem, not a hard-coded pair |
+
+None of these are documented, and none prove a numeric ceiling. But "filter LEDs for other
+controllers" is strong evidence the optical layer was built to see **more than the two it
+owns**. That supports the prediction below.
+
 ## What would settle it, in order of cost
 
-### Cheap, static (do first)
+### Cheap, static (done 2026-11-11)
 
-Enumerate the stack on the device and look for hard-coded maxima:
+Enumerating the stack found **no hard numeric controller limit** — but it did find the
+multi-controller machinery listed above. The relevant places to look again after an OS update:
 
 ```bash
 # On the Frame
-ls /opt/steamvr/bin/linuxarm64/ | head -50
-strings /opt/steamvr/bin/linuxarm64/vrserver 2>/dev/null | grep -iE "max.*(controller|device|tracked)" | head
-strings <tracking-service-binary> | grep -iE "max|limit|count" | head
+ls /opt/steamvr/bin/linuxarm64/
+strings /opt/steamvr/drivers/cv/bin/linuxarm64/XRService \
+  | grep -E "^[a-z][A-Za-z0-9]{4,44}$" | sort -u > /tmp/xrs_opts.txt
+grep -iE "controller|led|pair" /tmp/xrs_opts.txt
+grep -iE "controller|tracked device" ~/.local/share/Steam/logs/vrserver.txt | tail -30
 ```
 
-Also check configs:
-
-```bash
-find /opt/steamvr ~/.steam ~/.local/share/Steam -name "*.vrsettings" -o -name "vrserver.txt" 2>/dev/null | head
-```
-
-SteamVR writes `vrserver.txt` with device enumeration. Any log line containing
-`tracked device` with an index number tells us how enumeration is handled.
-
-`[U]` — untested on our build; headset was offline on 2026-11-11.
+`vrserver.txt` records pairing and device events (`cv: CRoyPairing ...`,
+`Using existing HMD ...`). It did **not** show any device-count ceiling.
 
 ### Cheap, empirical (needs controllers only)
 

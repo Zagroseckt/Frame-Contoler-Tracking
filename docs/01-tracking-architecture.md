@@ -23,13 +23,20 @@ Christmas lights, high-powered LEDs, and other IR sources `[D]`.
 
 ## Stage 2 — Cameras
 
-Four outward-facing monochrome fisheye cameras `[D]`:
+**Corrected 2026-11-11 from the device itself: there are six outward sensors, not four.**
 
-- two at the top corners
-- two at the front, low and widely spaced
+| Pair | Sensor | Resolution used | Notes |
+|---|---|---|---|
+| `slam_left/right` | OmniVision `og01a1b`, mono | 1056×1024 GREY | main tracking stereo pair |
+| `upper_left/right` | OmniVision `og0ve10`, mono | 640×480 GREY | upper coverage, FPGA-interleaved |
+| `passthrough_left/right` | Sony `arcimx616`, colour-capable | 2464×2464 NV12 | the wearer's passthrough pair |
 
-They are grayscale computer-vision cameras, not colour passthrough `[D]`. Two of them double as
-monochrome passthrough to the wearer `[D]`.
+`[V]` from the XRService log and V4L2 node formats. Press reported "four monochrome cameras";
+the sensors named by the system are the six above. Eye cameras are separate (the `eyetracking`
+process).
+
+Geometry per press `[P]`: two cameras at the top corners, two at the front low and widely
+spaced. The extra pair is the passthrough colour pair.
 
 Field of view is wide and fisheye-distorted on purpose: coverage matters more than rectilinear
 correctness. Consequences for us:
@@ -50,6 +57,11 @@ the world and the controllers drift *together*, which looks like "the room moved
 
 Each Frame controller carries **18 infrared LEDs** `[P]` — spread across the face, the handle,
 and the bottom, so that some LEDs stay visible whatever the grip `[P]`.
+
+**Confirmed from the headset's own model files `[V] 2026-11-11`:** `Roy_Left` and `Roy_Right`
+each define 18 `modelPoints` with 18 matching `modelNormals`. Bounding box ≈ 64 × 114 × 66 mm,
+closest LED pair 12.3 mm, three of the eighteen sit on the lower handle. Full details in
+`docs/07-ondevice-map.md` §4.
 
 > Compare: Quest 3 Touch Plus has 8 (7 face + 1 handle) `[D]`. That count difference is the
 > single most important number in this project — see `docs/06`.

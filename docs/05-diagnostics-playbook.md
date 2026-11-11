@@ -60,6 +60,20 @@ Caveats already learned `[V]`:
 **This is the composited headset view, not a raw tracking camera.** It is useful for "what does
 the wearer see" and for passthrough-ish frames. It is *not* a clean 4-camera tracking feed `[I]`.
 
+**Verified 2026-11-11:** a capture while nobody was wearing the headset is a completely black
+1920×1080 frame (6 KB PNG). Grab several frames and expect black when idle.
+
+### Raw tracking cameras are real but locked
+
+The tracking cameras are `GREY` V4L2 nodes (see `docs/07` §6):
+
+- `/dev/video9`, `/dev/video13` — 1056×1024 (SLAM pair)
+- `/dev/video6`, `/dev/video7` — 640×480 (upper pair)
+
+Streaming them fails with `VIDIOC_REQBUFS ... Device or resource busy` while XRService runs
+`[V]`. So there is no side-channel raw feed; getting one means stopping the tracking service.
+Do not do that casually — it kills tracking and may upset the runtime.
+
 ---
 
 ## 3. Valve's tracking dataset recorder — the good stuff
@@ -91,18 +105,28 @@ Capture procedure: `experiments/EXP-003-tracking-dataset.md`.
 
 ## 4. Looking for a marker/debug overlay
 
-The user specifically wants "visual markers showing how it's tracking". On desktop SteamVR
-there is a camera view with bounds visualisation; on the Frame the equivalent may exist in the
-Developer tab or not at all `[U]`.
+**Found 2026-11-11.** The dashboard already ships the switch:
 
-Search strategy, in order:
+- Label: **"Show Debug Camera Views"** (Settings → Developer tab,
+  `Advanced_ShowDebugCameraViews`)
+- Bound to `VRHTML.VRSystem.SetDebugCameraViewEnabled(bool)`
+- Also in that tab: **Record Tracking Data** with **Allow Camera Recording**, and
+  **Reset Controller Tracking Data**
+- Separately: **Controller Tracking: Classic / Alternate** appears in controller settings
+
+Catch: the toggle is **runtime-only**. It is not written to any settings file, and `vrcmd` has
+no command for it (`--set-settings-bool` answers "Error setting"). Today it is either a
+dashboard click or a page-injection job.
+
+Fallback search strategy if the toggle disappears in a future build:
 
 1. Developer settings tab — read every entry, screenshot with the headset view mirror.
-2. `strings` over SteamVR binaries looking for overlay/debug keywords.
+2. `strings` over `driver_cv.so` / `XRService` for `DebugCameraView`, `displayOverlay`, `debugVis`.
 3. SteamVR config (`steamvr.vrsettings`) for camera/debug keys.
-4. Ask the runtime itself: `vrmonitor`-style status tooling if present on ARM64.
+4. Ask the runtime itself: `vrcmd --info`, `--dumpsensors`.
 
-Keep expectations honest: a marker overlay may simply not be shipped on this build.
+Keep expectations honest: the debug views may draw into the headset only, in which case
+`vrcmd --screenshot` or the headset view mirror is how we get them onto a PC.
 
 ---
 

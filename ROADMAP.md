@@ -10,13 +10,13 @@ Phases are gated: don't start the next one until the previous one has evidence i
 what will and won't work.
 
 - P0.1 Inventory the on-device stack: SteamVR binaries, services, configs, tracking-related
-  processes, log locations. `[ ]`
+  processes, log locations. `[x]` — see `docs/07`
 - P0.2 Capture the Frame's own controller behaviour as baseline: LED blink pattern, pairing
   flow, what the tracking dataset contains. `[ ]`
 - P0.3 Answer the "how many controllers" question with at least static evidence and a test
-  plan. `[ ]`
+  plan. `[~]` — static evidence collected, no numeric ceiling found; test plan open
 - P0.4 Find out whether any debug view of the tracking cameras with marker overlay exists,
-  and whether "filters" can be toggled. `[ ]`
+  and whether "filters" can be toggled. `[~]` — "Show Debug Camera Views" toggle found; not yet enabled
 
 **Gate:** we can explain, in writing, every stage between "LED blinks" and "pose in OpenXR".
 

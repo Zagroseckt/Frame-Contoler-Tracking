@@ -19,6 +19,12 @@ and the encoding that tells two identical controllers apart.
 - For a Quest 3 controller, **no model exists on the Frame.** Nothing in Valve's docs suggests
   a plugin point for third-party constellations `[D]/[U]`.
 
+**Verified 2026-11-11:** the model is a JSON file per controller serial in
+`~/.config/openvr/config/roy/<serial>.json`, containing `modelPoints` (18 of them), matching
+`modelNormals`, IMU extrinsics, `model_number: "Roy_Left"/"Roy_Right"`, and
+`tracked_controller_role`. If the runtime will load a model file for a serial it meets over
+radio, that is our injection point. See `docs/07` §4.
+
 So this layer is not "pairing" at all — it's shipping the headset a new object model, which
 in practice means either (a) finding an undocumented model-loading path, or (b) doing our own
 pose solve outside the headset's pipeline. See `ROADMAP.md` P2.
@@ -35,6 +41,20 @@ Frame behaviour per Valve's support page:
 
 That is a headset-side flow, not a user-visible protocol. There's no documented "add a
 third-party controller" screen, and no SDK surface for it `[D]`.
+
+**What the binary says `[V] 2026-11-11`:** `driver_cv.so` contains a `CRoyPairing` subsystem
+that logs `discovered new <side> OOBE controller`, `new bootstrap`, `pairing requested for N
+seconds`, `pairing to OOBE controller`, `identify controller '<serial>'`, and on success
+`Controller <serial>: Paired`. Combined with the per-serial `roy/<serial>.json` model files,
+the flow is: **radio discovery → timed bootstrap window → identify by serial → write optical
+model file.**
+
+Three consequences:
+
+1. Pairing is radio-first. Optics never initiate a pairing.
+2. A controller's optical identity is *produced by* pairing, not independent of it.
+3. A foreign controller would have to complete a radio bootstrap before any model file could
+   even be addressed to it.
 
 Quest 3 pairing, for contrast, is a phone-app flow: hold Meta+B (right) or Menu+Y (left),
 then confirm in the Meta Horizon app `[D]`. The controller advertises, the app mediates, the
