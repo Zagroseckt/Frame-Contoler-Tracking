@@ -63,6 +63,7 @@ radio later (needs dedicated sniffing hardware). Details in `docs/02` and `docs/
 
 | File | What's in it |
 |---|---|
+| `AGENTS.md` | **Start here if you are an agent** — setup, install, run, safety rules, current phase |
 | `ROADMAP.md` | Phases, gates, what "done" means at each step |
 | `docs/01-tracking-architecture.md` | How the Frame's tracking actually works, stage by stage |
 | `docs/02-pairing-and-binding.md` | What "pairing" means at each layer, headset-side flow |
