@@ -93,6 +93,10 @@ If a note contradicts a doc, the note wins, but it gets re-tested before it beco
 
 ## Quick commands
 
+For the host-side image viewer, run `./run.sh`. It prepares all six streams from the
+verified local recording in temporary RAM-backed storage, then opens the viewer.
+See `viewer/README.md` for controls, privacy notes, dependencies, and playback limits.
+
 ```bash
 # Reachability check
 ssh -o ConnectTimeout=5 frame 'uname -a; cat /etc/os-release | head -5'
