@@ -72,6 +72,9 @@ radio later (needs dedicated sniffing hardware). Details in `docs/02` and `docs/
 | `docs/06-quest3-controllers.md` | Quest 3 deep dive and the concrete attack plan |
 | `docs/07-ondevice-map.md` | **Read this first** — verified map of the headset's tracking stack |
 | `docs/08-diagnostic-interface.md` | Can we build a separate diagnostic interface? Yes as a client, no as a second tracker |
+| `docs/09-plan-decode-and-viewer.md` | How the dataset streams were decoded and the viewer was built |
+| `docs/10-occ-image-codec.md` | OCC stream extraction findings |
+| `docs/11-getting-diagnostics-off-the-frame.md` | Copy-paste guide: logs, configs, datasets, camera frames and checksums off the headset |
 | `experiments/` | One file per experiment, with pass/fail criteria |
 | `notes/` | Session logs, dated, append-only |
 
@@ -92,6 +95,9 @@ If a note contradicts a doc, the note wins, but it gets re-tested before it beco
 ---
 
 ## Quick commands
+
+To pull logs, configs, tracking datasets or camera frames off the headset, follow
+`docs/11-getting-diagnostics-off-the-frame.md`. Start with `./scripts/frame-check.sh`.
 
 For the host-side image viewer, run `./run.sh`. It prepares all six streams from the
 verified local recording in temporary RAM-backed storage, then opens the viewer.
